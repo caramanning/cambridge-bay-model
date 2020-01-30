@@ -11,7 +11,7 @@ dt = 1/24; % model time increment in days
 ydmod =datenum(2018,1,1):dt:datenum(2019,1,1); %model time steps
 nd = length(ydmod);
 
-k_ox = 0.01; % microbial oxidation first-order rate constant in day^-1
+k_ox = 0; % microbial oxidation first-order rate constant in day^-1
 ox1 = datenum(2018,6,15); % date when oxidation should start (set to 0 prior to significant river inflow)
                            
 nb = 10; % number of boxes in model
