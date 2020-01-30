@@ -1,17 +1,19 @@
 % Matlab functions for modeling CH4 in Cambridge Bay estuary
 % Author: Cara Manning, University of British Columbia, cmanning@eoas.ubc.ca
-% Date updated: 30 June 2018
+% Date updated: 30 Jan 2020
 
 % To run this function you will need to install:
 % Gibbs-SeaWater Oceanographic Toolbox http://www.teos-10.org/software.htm
 % gas_toolbox https://github.com/dnicholson/gas_toolbox
-
 
 % set variables
 dt = 1/24; % model time increment in days
 ydmod =datenum(2018,1,1):dt:datenum(2019,1,1); %model time steps
 nd = length(ydmod);
 
+k_ox = 0.01; % microbial oxidation first-order rate constant in day^-1
+ox1 = datenum(2018,6,15); % date when oxidation should start (set to 0 prior to significant river inflow)
+                           
 nb = 10; % number of boxes in model
 bsa = 5e5; % box surface area in m2
 bd = 2; % box depth in meters
@@ -62,4 +64,11 @@ iob3 = 11:nb;
 
 run('CBfm_importdata.m'); % import data from various files
 run('CBfm_runmodel.m'); % run model for CH4 in estuary
-run('CBfm_plot_bottom2panels.m'); % model results for domain including coastal ocean
+
+% plot model results for domain including coastal ocean
+if k_ox > 0
+run('CBfm_plot_bottom2panels_withox.m'); % legend with microbial oxidation
+else
+run('CBfm_plot_bottom2panels.m'); % legend without microbial oxidation
+    
+end

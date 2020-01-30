@@ -19,6 +19,7 @@ F_out_riv = zeros(size(CH4_CB)); %flux out to the adjacent box (due to river inp
 F_out_ice = zeros(size(CH4_CB)); %flux out to adjacent box(due to ice melt)
 F_ge = zeros(size(CH4_CB)); % flux due to gas exchange
 F_ice =zeros(size(CH4_CB)); % flux in due to ice melt
+F_ox = zeros(size(CH4_CB)); % flux due to microbial oxidation of CH4
 
 
 for n = 1:nb
@@ -31,7 +32,15 @@ F_in(i,n) = 0;
 F_ge(i,n) = kiceCH4(i,n).*(CH4_CB_eq(i,n)-CH4_CB(i,n)).*dt.*bsa;
 F_ice(i,n) = vicedt_m(i,n).*CH4_ice;
 
-CH4_CB(i+1,n) = (CH4_CB(i,n).*bv + F_out_riv(i,n) + F_out_ice(i,n)+F_riv(i,n)+F_in(i,n)+F_ge(i,n)+F_ice(i,n))./bv;
+% CH4 oxidation only occurs after river discharge starts, to prevent CH4
+% concentration decreasing over winter
+if ydmod(i) >= ox1
+F_ox(i,n) = -1.*k_ox.*CH4_CB(i,n).*dt.*bsa;
+else
+    F_ox(i,n) = 0;
+end
+
+CH4_CB(i+1,n) = (CH4_CB(i,n).*bv + F_out_riv(i,n) + F_out_ice(i,n)+F_riv(i,n)+F_in(i,n)+F_ge(i,n)+F_ice(i,n) + F_ox(i,n))./bv;
 
 end
 
@@ -43,7 +52,15 @@ else
         F_out_ice(i,n) = -1*vicedt_m(i,n).*CH4_CB(i,n);
         F_ge(i,n) = kiceCH4(i,n).*(CH4_CB_eq(i,n)-CH4_CB(i,n)).*dt.*bsa;
         F_ice(i,n) = vicedt_m(i,n).*CH4_ice;
-        CH4_CB(i+1,n) = (CH4_CB(i,n).*bv + F_out_riv(i,n) + F_out_ice(i,n)+F_in(i,n)+F_ge(i,n)+F_ice(i,n))./bv;
+        
+        % CH4 oxidation only occurs after river discharge begins
+        if ydmod(i) >= ox1
+            F_ox(i,n) = -1.*k_ox.*CH4_CB(i,n).*dt.*bsa;
+        else
+        F_ox(i,n) = 0;
+        end
+         
+        CH4_CB(i+1,n) = (CH4_CB(i,n).*bv + F_out_riv(i,n) + F_out_ice(i,n)+F_in(i,n)+F_ge(i,n)+F_ice(i,n)+F_ox(i,n))./bv;
     end
 end
 end
@@ -55,6 +72,7 @@ F_out_ice_ps = F_out_ice./dt;
 F_ge_ps = F_ge./dt;
 F_ice_ps = F_ice./dt;
 F_riv_ps = F_riv./dt;
+F_ox_ps = F_ox./dt;
 
 dn = nd/24;
 
@@ -73,7 +91,8 @@ F_ge_sum = sum(sum(F_ge));
 F_out_riv_sum = sum(F_out_riv(:,nb));
 F_out_ice_sum = sum(sum(F_out_ice));
 F_ice_sum = sum(sum(F_ice));
+F_ox_sum = sum(sum(F_ox));
 
 % save out cumulative fluxes from river in, gas ex, river out, ice in, ice
-% out
-fluxes=[F_riv_sum F_ge_sum F_out_riv_sum F_ice_sum F_out_ice_sum];
+% out, oxidation
+fluxes=[F_riv_sum F_ge_sum F_out_riv_sum F_ice_sum F_out_ice_sum,F_ox_sum];

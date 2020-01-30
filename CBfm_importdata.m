@@ -6,7 +6,7 @@ load CBg;
 % load in Freshwater Creek discharge data 1970-2016
 % the end of the spreadsheet had water level values for 2002-2016 so these
 % have been removed
-load freshwater_creek_CM.mat;
+load freshwater_creek.mat;
 
 % load in 2018 Freshwater Creek Discharge data
 % see FWC_2017_2018.m
