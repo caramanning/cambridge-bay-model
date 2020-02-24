@@ -1,4 +1,4 @@
-# cambridge-bay-methane
+# cambridge-bay-model
 model for methane cycling in Cambridge Bay, Nunavut
 
 This model code is provided as a supplement to the following paper: 
