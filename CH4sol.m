@@ -17,13 +17,12 @@ function [conc_CH4] = CH4sol(S,T,varargin)
 %   fCH4 = allows user to specify fugacity of CH4 [atm]
 % 
 % DEFAULT, if fCH4 is not specified:
-%   fCH4 = 1940e-9 atm
+%   fCH4 = 1851.4e-9 
+%   This is the January 2017 global mean from NOAA ESRL:
+%    https://www.esrl.noaa.gov/gmd/ccgg/trends_ch4/
 %
 % OUTPUT:
 %   concCH4 = solubility of CH4  [umol/kg] 
-%
-% Atm. concentration available at: NOAA / ESRL interactive data viewer
-% (https://www.esrl.noaa.gov/gmd/dv/iadv/)
 % 
 % AUTHOR:  Cara Manning and P. Tortell modified from Roberta Hamme
 %
@@ -61,7 +60,7 @@ end %if
 if nargin > 2
     fCH4 = varargin{1};
 else
-    fCH4 = 1940;
+    fCH4 = 1940e-9;
 end
 
 %------
